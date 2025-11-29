@@ -41,6 +41,6 @@ Press Ctrl+C to stop.
 > 1. 在終端機按 `Ctrl+C` 停止目前的伺服器。
 > 2. 再次輸入 `python server.py` 並按 Enter 啟動。
 
-### 4. 懶人包，使用封裝好的版本，點選直接執行（系統需已安裝python)
+### 4. 懶人包，使用封裝好的版本，點選直接執行
 1. Windows版下載：[https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe)
 3. Mac版下載：[https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg)
