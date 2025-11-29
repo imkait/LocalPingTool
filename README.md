@@ -39,5 +39,5 @@ Press Ctrl+C to stop.
 > 2. 再次輸入 `python server.py` 並按 Enter 啟動。
 
 ### 4. 懶人包，使用編譯好的版本
-1. Windows版下載：[[點此前往 Google](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe)]([https://www.google.com](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe))
-2. Mac版下載：[https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg)
+1. Windows版下載：[https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe)
+3. Mac版下載：[https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg)
