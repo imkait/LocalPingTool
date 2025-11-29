@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地網路設備監測系統</title>
+    <style>
+        :root {
+            /* Dark Mode (Default) */
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.8);
+            --text-color: #c9d1d9;
+            --primary-color: #58a6ff;
+            --success-color: #2ea043;
+            --danger-color: #da3633;
+            --border-color: #30363d;
+            --shadow: 0 0 15px rgba(88, 166, 255, 0.1);
+            --neon-glow: 0 0 5px var(--primary-color);
+            --input-bg: #0d1117;
+            --header-bg: rgba(48, 54, 61, 0.5);
+            --item-hover: rgba(48, 54, 61, 0.3);
+            --bg-image: linear-gradient(rgba(13, 17, 23, 0.9), rgba(13, 17, 23, 0.9)),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2330363d' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        body.light-mode {
+            /* Light Mode Overrides */
+            --bg-color: #f0f2f5;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #24292f;
+            --primary-color: #0969da;
+            --success-color: #1a7f37;
+            --danger-color: #cf222e;
+            --border-color: #d0d7de;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --neon-glow: none;
+            --input-bg: #ffffff;
+            --header-bg: #f6f8fa;
+            --item-hover: #f6f8fa;
+            --bg-image: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            margin: 0;
+            min-height: 100vh;
+            background-image: var(--bg-image);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+        }
+
+        body.light-mode h1 {
+            text-shadow: none;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: var(--header-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .row-1 {
+            width: 100%;
+        }
+
+        .row-2 {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        select:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+        }
+
+        /* Row 2 items flex properties */
+        #nameInput {
+            flex: 2;
+            min-width: 150px;
+        }
+
+        #ipInput {
+            flex: 2;
+            min-width: 150px;
+        }
+
+        button.add-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        button.add-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.section-header {
+            background-color: var(--header-bg);
+            color: var(--primary-color);
+            font-weight: bold;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-left: 3px solid var(--primary-color);
+            transition: background-color 0.3s;
+        }
+
+        li.ip-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s, border-color 0.3s;
+        }
+
+        li.ip-item:last-child {
+            border-bottom: none;
+        }
+
+        li.ip-item:hover {
+            background-color: var(--item-hover);
+        }
+
+        .ip-info-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ip-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--text-color);
+            transition: color 0.3s;
+        }
+
+        .ip-addr {
+            color: #8b949e;
+            font-size: 14px;
+            font-family: monospace;
+            margin-top: 4px;
+        }
+
+        body.light-mode .ip-addr {
+            color: #57606a;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #484f58;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .status-ok {
+            background-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+
+        .status-error {
+            background-color: var(--danger-color);
+            box-shadow: 0 0 10px var(--danger-color);
+        }
+
+        .status-warning {
+            background-color: #d29922;
+            box-shadow: 0 0 10px #d29922;
+        }
+
+        .status-loading {
+            background-color: #d29922;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(210, 153, 34, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(210, 153, 34, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(210, 153, 34, 0);
+            }
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            color: #8b949e;
+            border: none;
+            padding: 5px 10px;
+            font-size: 18px;
+            margin-left: 15px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-controls {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-color);
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-select {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .edit-input {
+            padding: 8px;
+            font-size: 14px;
+            margin-right: 5px;
+            width: 140px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            margin-left: 5px;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .edit-btn {
+            color: var(--primary-color);
+        }
+
+        .save-btn {
+            color: var(--success-color);
+        }
+
+        .cancel-btn {
+            color: var(--danger-color);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                width: 95%;
+            }
+
+            .row-2 {
+                flex-direction: column;
+            }
+
+            #nameInput,
+            #ipInput,
+            button.add-btn {
+                width: 100%;
+                flex: none;
+            }
+
+            .edit-input {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>本地網路設備監測系統</h1>
+
+        <div class="input-group">
+            <div class="row-1">
+                <select id="deviceType">
+                    <option value="node">網路節點</option>
+                    <option value="switch">交換器</option>
+                    <option value="server">伺服器</option>
+                </select>
+            </div>
+            <div class="row-2">
+                <input type="text" id="nameInput" placeholder="名稱 (例如 Google DNS)">
+                <input type="text" id="ipInput" placeholder="IP 位址 (例如 8.8.8.8)" onkeypress="handleEnter(event)">
+                <button class="add-btn" onclick="addIp()">新增</button>
+            </div>
+        </div>
+
+        <ul id="ipList">
+            <!-- IP 項目將會顯示在這裡 -->
+        </ul>
+
+        <div class="footer-controls">
+            <div class="control-group">
+                <label for="intervalInput">自動更新間隔 (ms):</label>
+                <input type="number" id="intervalInput" value="60000" onchange="updateInterval(this.value)"
+                    style="width: 80px; padding: 5px;">
+            </div>
+            <div class="control-group">
+                <label for="themeSelect">版面配色:</label>
+                <select id="themeSelect" class="theme-select" onchange="toggleTheme(this.value)">
+                    <option value="dark">Dark 模式</option>
+                    <option value="light">Light 模式</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ipList = [];
+        let editingIndex = -1;
+        let updateTimer = null;
+
+        async function loadIps() {
+            try {
+                const response = await fetch('/api/ips');
+                if (response.ok) {
+                    ipList = await response.json();
+                    renderList();
+                    checkAllIps();
+                }
+            } catch (error) {
+                console.error('Failed to load IPs:', error);
+            }
+        }
+
+        async function saveIps() {
+            try {
+                await fetch('/api/ips', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(ipList)
+                });
+            } catch (error) {
+                console.error('Failed to save IPs:', error);
+            }
+        }
+
+        // IP 排序比較函式
+        function compareIps(a, b) {
+            const ipA = a.ip.split('.').map(Number);
+            const ipB = b.ip.split('.').map(Number);
+
+            for (let i = 0; i < 4; i++) {
+                if (ipA[i] < ipB[i]) return -1;
+                if (ipA[i] > ipB[i]) return 1;
+            }
+            return 0;
+        }
+
+        function renderList() {
+            const listElement = document.getElementById('ipList');
+            listElement.innerHTML = '';
+
+            // 分組與排序
+            const servers = ipList.filter(item => item.type === 'server' || !item.type).sort(compareIps);
+            const switches = ipList.filter(item => item.type === 'switch').sort(compareIps);
+            const nodes = ipList.filter(item => item.type === 'node').sort(compareIps);
+
+            const createSection = (title, items) => {
+                if (items.length === 0) return;
+
+                const header = document.createElement('li');
+                header.className = 'section-header';
+                header.innerText = title;
+                listElement.appendChild(header);
+
+                items.forEach((item) => {
+                    const originalIndex = ipList.indexOf(item);
+                    const isEditing = originalIndex === editingIndex;
+
+                    const li = document.createElement('li');
+                    li.className = 'ip-item';
+
+                    if (isEditing) {
+                        li.innerHTML = `
+                        <div class="ip-info-container" style="width: 100%;">
+                            <input type="text" id="edit-name-${originalIndex}" class="edit-input" value="${item.name || item.ip}" placeholder="名稱">
+                            <input type="text" id="edit-ip-${originalIndex}" class="edit-input" value="${item.ip}" placeholder="IP">
+                        </div>
+                        <div class="controls">
+                            <button class="action-btn save-btn" onclick="saveEdit(${originalIndex})" title="儲存">✓</button>
+                            <button class="action-btn cancel-btn" onclick="cancelEdit()" title="取消">✕</button>
+                        </div>
+                        `;
+                    } else {
+                        li.innerHTML = `
+                        <div class="ip-info-container">
+                            <span id="name-${originalIndex}" class="ip-name">${item.name || item.ip}</span>
+                            <span class="ip-addr">${item.ip}</span>
+                        </div>
+                        <div class="controls">
+                            <div id="status-${originalIndex}" class="status-indicator" title="等待檢測..."></div>
+                            <button class="action-btn edit-btn" onclick="editIp(${originalIndex})" title="編輯">✎</button>
+                            <button class="action-btn delete-btn" onclick="removeIp(${originalIndex})" title="刪除">✕</button>
+                        </div>
+                        `;
+                    }
+                    listElement.appendChild(li);
+                });
+            };
+
+            // 調整順序：網路節點 -> 交換器 -> 伺服器
+            createSection('網路節點', nodes);
+            createSection('交換器', switches);
+            createSection('伺服器', servers);
+        }
+
+        function addIp() {
+            const ipInput = document.getElementById('ipInput');
+            const nameInput = document.getElementById('nameInput');
+            const typeInput = document.getElementById('deviceType');
+
+            const ip = ipInput.value.trim();
+            const name = nameInput.value.trim();
+            const type = typeInput.value;
+
+            if (ip) {
+                // 檢查 IP 是否重複
+                if (!ipList.some(item => item.ip === ip)) {
+                    ipList.push({ ip: ip, name: name || ip, type: type });
+                    saveIps();
+                    renderList();
+                    const newIndex = ipList.length - 1;
+                    checkIpStatus(ip, newIndex);
+                } else {
+                    alert('此 IP 已在列表中');
+                }
+                ipInput.value = '';
+                nameInput.value = '';
+                nameInput.focus();
+            }
+        }
+
+        function removeIp(index) {
+            if (confirm('確定要刪除嗎？')) {
+                ipList.splice(index, 1);
+                saveIps();
+                renderList();
+            }
+        }
+
+        function editIp(index) {
+            editingIndex = index;
+            renderList();
+        }
+
+        function cancelEdit() {
+            editingIndex = -1;
+            renderList();
+        }
+
+        function saveEdit(index) {
+            const nameInput = document.getElementById(`edit-name-${index}`);
+            const ipInput = document.getElementById(`edit-ip-${index}`);
+
+            const newName = nameInput.value.trim();
+            const newIp = ipInput.value.trim();
+
+            if (newIp) {
+                // Check for duplicates, excluding the current item itself
+                const duplicate = ipList.some((item, idx) => item.ip === newIp && idx !== index);
+                if (duplicate) {
+                    alert('此 IP 已存在於列表中');
+                    return;
+                }
+
+                ipList[index].name = newName || newIp;
+                ipList[index].ip = newIp;
+
+                saveIps();
+                editingIndex = -1;
+                renderList();
+                checkIpStatus(newIp, index);
+            } else {
+                alert('IP 不能為空');
+            }
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                addIp();
+            }
+        }
+
+        function toggleTheme(mode) {
+            if (mode === 'light') {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
+        }
+
+        function updateInterval(value) {
+            const interval = parseInt(value, 10);
+            if (interval && interval > 0) {
+                if (updateTimer) clearInterval(updateTimer);
+                updateTimer = setInterval(checkAllIps, interval);
+                console.log(`Update interval set to ${interval}ms`);
+                // 立即執行一次以提供回饋
+                checkAllIps();
+            }
+        }
+
+        async function checkIpStatus(ip, index) {
+            const statusElement = document.getElementById(`status-${index}`);
+            const nameElement = document.getElementById(`name-${index}`);
+            if (!statusElement) return;
+
+            // Set loading state - Removed to prevent yellow flash
+            // statusElement.className = 'status-indicator status-loading';
+
+            try {
+                const response = await fetch(`/api/ping?ip=${encodeURIComponent(ip)}`);
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    if (data.latency && data.latency > 100) {
+                        statusElement.className = 'status-indicator status-warning';
+                        statusElement.title = `連線延遲: ${data.latency}ms`;
+                    } else {
+                        statusElement.className = 'status-indicator status-ok';
+                        statusElement.title = data.latency ? `連線正常 (${data.latency}ms)` : '連線正常';
+                    }
+                    if (nameElement) nameElement.style.color = 'var(--text-color)';
+                } else {
+                    statusElement.className = 'status-indicator status-error';
+                    statusElement.title = '無法連線';
+                    if (nameElement) nameElement.style.color = 'var(--danger-color)';
+                }
+            } catch (error) {
+                console.error('Ping error:', error);
+                statusElement.className = 'status-indicator status-error';
+                statusElement.title = '檢查錯誤';
+                if (nameElement) nameElement.style.color = 'var(--danger-color)';
+            }
+        }
+
+        function checkAllIps() {
+            ipList.forEach((item, index) => {
+                checkIpStatus(item.ip, index);
+            });
+        }
+
+        // 初始化
+        loadIps();
+
+        // 預設 60 秒自動更新一次
+        updateTimer = setInterval(checkAllIps, 60000);
+
+    </script>
+</body>
+
+</html>
