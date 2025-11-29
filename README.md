@@ -8,7 +8,7 @@
 打開終端機，進入專案目錄並執行 Python 腳本：
 
 ```bash
-python3 server.py
+python server.py
 ```
 
 您會看到類似以下的輸出：
@@ -23,17 +23,21 @@ Press Ctrl+C to stop.
 ### 3. 使用功能
 1.  在輸入框輸入 **名稱** (例如 `Google DNS`) 與 **IP** (例如 `8.8.8.8`)。
 2.  點擊「新增」按鈕。
-3.  網頁會自動每 60 秒 Ping 一次該 IP（可自行修訂)。 
+3.  監測清單會自動儲存成ips.csv檔案，以方便每次開啟前讀取。
+4.  網頁會自動每 60 秒 Ping 一次該 IP（可自行修訂)。 
     - 🟢 **綠燈**：連線正常
     - 🔴 **紅燈**：無法連線 (Timeout)
 
 ## 檔案列表
 - `server.py`: Python 後端，負責執行 Ping 指令。
 - `index.html`: 前端介面。
+- 'ips.csv': 監控IP設備清單（自動產生)。
 
 > [!NOTE]
 > **如何重啟伺服器？**
 > 1. 在終端機按 `Ctrl+C` 停止目前的伺服器。
-> 2. pkill -f "python"
-> 3. 再次輸入 `python3 server.py` 並按 Enter 啟動。
+> 2. 再次輸入 `python server.py` 並按 Enter 啟動。
 
+### 4. 懶人包，使用編譯好的版本
+1. Windows版下載：[[點此前往 Google](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe)]([https://www.google.com](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-win.exe))
+2. Mac版下載：[https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg](https://github.com/imkait/LocalPingTool/releases/download/v0.1.0/LocalPingtool-v0.1.0-mac.dmg)
