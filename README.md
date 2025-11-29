@@ -31,7 +31,7 @@ Press Ctrl+C to stop.
 ## 檔案列表
 - `server.py`: Python 後端，負責執行 Ping 指令。
 - `index.html`: 前端介面。
-- 'ips.csv': 監控IP設備清單（自動產生)。
+- `ips.csv`: 監控IP設備清單（自動產生)。
 
 > [!NOTE]
 > **如何重啟伺服器？**
